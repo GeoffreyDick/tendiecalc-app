@@ -9,6 +9,7 @@
   "dependencies": {
     "@tailwindcss/forms": "^0.2.1",
     "axios": "^0.21.1",
+    "currency.js": "^2.0.3",
     "vue": "^3.0.5",
     "vuex": "^4.0.0"
   },
