@@ -26,20 +26,26 @@ export const store = createStore<State>({
       currency: Currency.USD
     },
     quote: {},
-    trades: {}
+    trades: {},
   },
   getters: {
     getCurrentPrice: (state: State): number | null => {
       // Return latest trade price, or quote price if none (when market is closed)
-      return state.trades.data?.[0].c || state.quote.c || null
+      if (state.trades.data?.[0].p) {
+        return state.trades.data?.[0].p;
+      } else if (state.quote.c) {
+        return state.quote.c
+      } else {
+        return null
+      }
     }
   },
   mutations: {
     SET_QUOTE(state: State, payload: Quote) {
       state.quote = payload
     },
-    SET_TRADES(state, payload: Trades) {
-      state.trades = payload
+    SET_TRADES(state, payload: string) {
+      state.trades = JSON.parse(payload)
     }
   }
 })

@@ -1,5 +1,7 @@
 <template>
   <h1>{{ msg }}</h1>
+  <p>{{ $store.state.quote }}</p>
+  <p>{{ $store.getters.getCurrentPrice }}</p>
 
   <p>
     Recommended IDE setup:
@@ -8,21 +10,24 @@
     <a
       href="https://marketplace.visualstudio.com/items?itemName=octref.vetur"
       target="_blank"
-    >Vetur</a>
+      >Vetur</a
+    >
     or
     <a href="https://github.com/johnsoncodehk/volar" target="_blank">Volar</a>
     (if using
     <code>&lt;script setup&gt;</code>)
   </p>
 
-  <p>See <code>README.md</code> for more information.</p>
+  <p class="text-red-500">See <code>README.md</code> for more information.</p>
 
   <p>
-    <a href="https://vitejs.dev/guide/features.html" target="_blank">Vite Docs</a> |
+    <a href="https://vitejs.dev/guide/features.html" target="_blank"
+      >Vite Docs</a
+    >
+    |
     <a href="https://v3.vuejs.org/" target="_blank">Vue 3 Docs</a>
   </p>
 
-  <button @click="count++">count is: {{ count }}</button>
   <p>
     Edit
     <code>components/HelloWorld.vue</code> to test hot module replacement.
@@ -30,36 +35,58 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from 'vue'
+import { ref, defineComponent, onMounted, onUnmounted, computed } from "vue";
+import axios from "axios";
+import { store } from "../store";
+import { useStore } from "vuex";
 export default defineComponent({
-  name: 'HelloWorld',
+  name: "HelloWorld",
   props: {
     msg: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   setup: () => {
-    const count = ref(0)
-    return { count }
-  }
-})
+    const store = useStore();
+
+    let socket: any;
+
+    // Unsubscribe
+    const unsubscribe = (symbol: string) => {
+      socket.send(JSON.stringify({ type: "unsubscribe", symbol }));
+    };
+
+    const symbol: string = "GME";
+
+    onMounted(() => {
+      axios
+        .get(
+          "https://finnhub.io/api/v1/quote?symbol=GME&token=c14eajn48v6t40fve2m0"
+        )
+        .then((response: any) => {
+          store.commit("SET_QUOTE", response.data);
+        });
+
+      // Define WebSocket
+      socket = new WebSocket("wss://ws.finnhub.io?token=c14eajn48v6t40fve2m0");
+
+      // Connection opened -> Subscribe
+      socket.addEventListener("open", function (event: any) {
+        socket.send(JSON.stringify({ type: "subscribe", symbol }));
+      });
+
+      // Listen for messages
+      socket.addEventListener("message", function (event: any) {
+        store.commit("SET_TRADES", event.data);
+      });
+    });
+
+    onUnmounted(() => {
+      unsubscribe(symbol);
+    });
+  },
+});
 </script>
 
-<style scoped>
-a {
-  color: #42b983;
-}
-
-label {
-  margin: 0 0.5em;
-  font-weight: bold;
-}
-
-code {
-  background-color: #eee;
-  padding: 2px 4px;
-  border-radius: 4px;
-  color: #304455;
-}
-</style>
+<style scoped></style>
