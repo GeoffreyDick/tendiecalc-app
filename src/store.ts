@@ -44,8 +44,8 @@ export const store = createStore<State>({
     SET_QUOTE(state: State, payload: Quote) {
       state.quote = payload
     },
-    SET_TRADES(state, payload: string) {
-      state.trades = JSON.parse(payload)
+    SET_TRADES(state, payload: Trades) {
+      state.trades = payload;
     }
   }
 })

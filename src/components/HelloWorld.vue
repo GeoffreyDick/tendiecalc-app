@@ -78,7 +78,7 @@ export default defineComponent({
 
       // Listen for messages
       socket.addEventListener("message", function (event: any) {
-        store.commit("SET_TRADES", event.data);
+        store.commit("SET_TRADES", JSON.parse(event.data));
       });
     });
 
