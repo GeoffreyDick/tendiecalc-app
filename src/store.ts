@@ -1,6 +1,7 @@
 import { InjectionKey } from 'vue'
 import { createStore, Store } from 'vuex'
 import { Currency } from './types/currency.enum'
+import { Exchange } from './types/exchange.type'
 import { Quote } from './types/quote.type'
 import { Setup } from './types/setup.type'
 import { Trades } from './types/trades.type'
@@ -10,6 +11,7 @@ export interface State {
   setup: Setup,
   quote: Quote,
   trades: Trades
+  exchange: Exchange
 }
 
 // define injection key
@@ -27,6 +29,7 @@ export const store = createStore<State>({
     },
     quote: {},
     trades: {},
+    exchange: {}
   },
   getters: {
     getCurrentPrice: (state: State): number | null => {
@@ -46,6 +49,9 @@ export const store = createStore<State>({
     },
     SET_TRADES(state, payload: Trades) {
       state.trades = payload;
+    },
+    SET_EXCHANGE(state, payload: Exchange) {
+      state.exchange = payload
     }
   }
 })

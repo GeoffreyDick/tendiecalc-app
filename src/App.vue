@@ -20,6 +20,14 @@ export default defineComponent({
     const symbol: string = "GME";
 
     onMounted(() => {
+      // Get exchange rates
+      axios
+        .get("https://api.exchangeratesapi.io/latest?base=USD")
+        .then((response: any) => {
+          store.commit("SET_EXCHANGE", response.data);
+        });
+
+      // Get initial quote before WebSocket is connected
       axios
         .get(
           "https://finnhub.io/api/v1/quote?symbol=GME&token=c14eajn48v6t40fve2m0"
