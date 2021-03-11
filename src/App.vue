@@ -1,27 +1,52 @@
-<template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
-</template>
+<template></template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import HelloWorld from './components/HelloWorld.vue'
+import { defineComponent, onMounted, onUnmounted } from "vue";
+import axios from "axios";
+import { useStore } from "vuex";
 
 export default defineComponent({
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-})
+  name: "App",
+  setup: () => {
+    const store = useStore();
+
+    let socket: any;
+
+    // Unsubscribe
+    const unsubscribe = (symbol: string) => {
+      socket.send(JSON.stringify({ type: "unsubscribe", symbol }));
+    };
+
+    const symbol: string = "GME";
+
+    onMounted(() => {
+      axios
+        .get(
+          "https://finnhub.io/api/v1/quote?symbol=GME&token=c14eajn48v6t40fve2m0"
+        )
+        .then((response: any) => {
+          store.commit("SET_QUOTE", response.data);
+        });
+
+      // Define WebSocket
+      socket = new WebSocket("wss://ws.finnhub.io?token=c14eajn48v6t40fve2m0");
+
+      // Connection opened -> Subscribe
+      socket.addEventListener("open", function (event: any) {
+        socket.send(JSON.stringify({ type: "subscribe", symbol }));
+      });
+
+      // Listen for messages
+      socket.addEventListener("message", function (event: any) {
+        store.commit("SET_TRADES", JSON.parse(event.data));
+      });
+    });
+
+    onUnmounted(() => {
+      unsubscribe(symbol);
+    });
+  },
+});
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style></style>
