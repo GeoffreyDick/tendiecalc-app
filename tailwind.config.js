@@ -1,3 +1,5 @@
+const tailwindForms = require("@tailwindcss/forms");
+
 module.exports = {
   purge: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   darkMode: "class",
@@ -26,5 +28,5 @@ module.exports = {
       ringOpacity: ["focus-within"],
     },
   },
-  plugins: [],
+  plugins: [tailwindForms],
 };
