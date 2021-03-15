@@ -5,7 +5,7 @@
     <div class="flex space-x-4 items-end">
       <img
         class="h-12 lg:h-14"
-        src="favicon/android-chrome-192x192.png"
+        src="/favicon/android-chrome-192x192.png"
         alt="Gorilla Emoji"
       />
       <h1 class="text-3xl lg:text-5xl font-bold">TendieCalc</h1>
