@@ -1,14 +1,26 @@
-<template></template>
+<template>
+  <AppNav />
+  <router-view class="flex-grow" />
+  <AppFooter />
+</template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted } from "vue";
+import { defineComponent, onMounted, onUnmounted, watch } from "vue";
 import axios from "axios";
 import { useStore } from "vuex";
+import { useRoute } from "vue-router";
+import AppNav from "./components/AppNav.vue";
+import AppFooter from "./components/AppFooter.vue";
 
 export default defineComponent({
   name: "App",
+  components: {
+    AppNav,
+    AppFooter,
+  },
   setup: () => {
     const store = useStore();
+    const route = useRoute();
 
     let socket: any;
 
@@ -19,6 +31,35 @@ export default defineComponent({
 
     const symbol: string = "GME";
 
+    watch(
+      () => route.query,
+      (newValue) => {
+        const {
+          targetPrice,
+          shares,
+          averageCost,
+          taxRate,
+          currency,
+        } = newValue;
+
+        if (targetPrice) {
+          store.commit("SET_SETUP_TARGET_PRICE", targetPrice);
+        }
+        if (shares) {
+          store.commit("SET_SETUP_SHARES", shares);
+        }
+        if (averageCost) {
+          store.commit("SET_SETUP_AVERAGE_COST", averageCost);
+        }
+        if (taxRate) {
+          store.commit("SET_SETUP_TAX_RATE", taxRate);
+        }
+        if (currency) {
+          store.commit("SET_SETUP_CURRENCY", currency);
+        }
+      }
+    );
+
     onMounted(() => {
       // Get exchange rates
       axios
@@ -28,13 +69,9 @@ export default defineComponent({
         });
 
       // Get initial quote before WebSocket is connected
-      axios
-        .get(
-          "https://finnhub.io/api/v1/quote?symbol=GME&token=c14eajn48v6t40fve2m0"
-        )
-        .then((response: any) => {
-          store.commit("SET_QUOTE", response.data);
-        });
+      axios.get("/api/quote").then((response: any) => {
+        store.commit("SET_QUOTE", response.data);
+      });
 
       // Define WebSocket
       socket = new WebSocket("wss://ws.finnhub.io?token=c14eajn48v6t40fve2m0");

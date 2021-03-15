@@ -7,11 +7,13 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@soerenmartius/vue3-clipboard": "^0.1.2",
     "@tailwindcss/forms": "^0.2.1",
+    "@vercel/node": "^1.9.1",
     "axios": "^0.21.1",
     "currency.js": "^2.0.3",
     "vue": "^3.0.5",
-    "vue-currency-input": "^2.0.0-rc.1",
+    "vue-router": "4",
     "vuex": "^4.0.0"
   },
   "devDependencies": {
