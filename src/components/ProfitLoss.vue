@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, ref } from "vue";
+import { computed, ComputedRef, defineComponent, Ref, ref } from "vue";
 import currency from "currency.js";
 
 enum Performance {
@@ -44,25 +44,35 @@ export default defineComponent({
     },
   },
   setup: (props) => {
-    const symbols: object = ref({
+    const symbols: Ref<{ gain: string; loss: string; even: string }> = ref({
       gain: "&blacktriangle;",
       loss: "&blacktriangledown;",
       even: "&#8210;",
     });
-    const performance: ComputedRef<Performance> = computed(() => {
-      if (props.profitLoss > 0) {
-        return Performance.GAIN;
-      } else if (props.profitLoss < 0) {
-        return Performance.LOSS;
-      } else {
-        return Performance.EVEN;
+    const performance: ComputedRef<Performance> = computed(
+      (): Performance => {
+        if (props.profitLoss > 0) {
+          return Performance.GAIN;
+        } else if (props.profitLoss < 0) {
+          return Performance.LOSS;
+        } else {
+          return Performance.EVEN;
+        }
       }
-    });
-    const percentChange: ComputedRef<number> = computed(() => {
+    );
+    const percentChange: ComputedRef<number> = computed((): number => {
       return (props.profitLoss / props.referencePrice) * 100;
     });
-    const color: ComputedRef<string> = computed(() => {
-      return `text-${performance.value}`;
+    const color: ComputedRef<string> = computed((): string => {
+      if (performance.value === Performance.GAIN) {
+        return "text-gain";
+      }
+      if (performance.value === Performance.LOSS) {
+        return "text-loss";
+      }
+      if (performance.value === Performance.EVEN) {
+        return "text-even";
+      }
     });
 
     return {

@@ -15,7 +15,7 @@
         :referencePrice="$store.getters.getTotalCost"
       />
     </div>
-    <span class="text-sm leading-relaxed"
+    <span class="leading-relaxed"
       >At a {{ $store.state.setup.taxRate }}% tax rate, you will need to set
       aside
       <span class="text-white font-medium tracking-wide opacity-75">{{

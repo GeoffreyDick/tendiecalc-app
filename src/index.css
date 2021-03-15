@@ -3,40 +3,10 @@
 @tailwind utilities;
 
 @layer base {
-  @font-face {
-    font-family: Inconsolata;
-    src: url(/fonts/Inconsolata-VariableFont_wdthwght.ttf) format("ttf");
-    font-weight: 400;
-  }
-  @font-face {
-    font-family: Inconsolata;
-    src: url("assets/fonts/Inconsolata-VariableFont_wdthwght.ttf") format("ttf");
-    font-weight: 500;
-  }
-  @font-face {
-    font-family: Inconsolata;
-    src: url("assets/fonts/Inconsolata-VariableFont_wdthwght.ttf") format("ttf");
-    font-weight: 600;
-  }
-  @font-face {
-    font-family: Inconsolata;
-    src: url("assets/fonts/Inconsolata-VariableFont_wdthwght.ttf") format("ttf");
-    font-weight: 700;
-  }
-  @font-face {
-    font-family: Inconsolata;
-    src: url("assets/fonts/Inconsolata-VariableFont_wdthwght.ttf") format("ttf");
-    font-weight: 800;
-  }
-  @font-face {
-    font-family: Inconsolata;
-    src: url("assets/fonts/Inconsolata-VariableFont_wdthwght.ttf") format("ttf");
-    font-weight: 900;
-  }
-
+  @import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap");
   html,
   body {
-    @apply bg-dark text-primary font-monospace font-medium tracking-wide;
+    @apply bg-dark text-primary font-monospace font-semibold tracking-wider;
   }
 
   /* Hide input[type=number] arrows */
